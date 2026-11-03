@@ -1,0 +1,457 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Teste de Chunks</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: uma coluna de celular; o progresso é uma fileira de 5 blocos que se encaixam. */
+:root {
+  --navy: #1a2380;
+  --navy-deep: #141b66;
+  --pink: #e91d64;
+  --cream: #fdf6ec;
+  --ink: #22274b;
+  --soft: #c9cdf0;
+  --good: #1f8a5b;
+  --wrong: #c2184f;
+  --display: "Fredoka", "Trebuchet MS", sans-serif;
+  --body: "Inter", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  background: var(--navy);
+  color: var(--cream);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.app {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding-block: 24px 32px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+.logo { display: grid; grid-template-columns: 11px 11px; gap: 3px; }
+.logo i { width: 11px; height: 11px; border-radius: 3px; background: var(--cream); }
+.logo i:nth-child(2), .logo i:nth-child(3) { background: var(--pink); }
+.screen { display: flex; flex-direction: column; gap: 20px; flex: 1; }
+h1, h2 { font-family: var(--display); font-weight: 600; line-height: 1.12; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(38px, 11vw, 48px); }
+h2 { font-size: clamp(28px, 8vw, 34px); }
+p { margin: 0; }
+.lead { color: var(--soft); font-size: 17px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+.facts li { background: var(--navy-deep); border-radius: 8px; padding: 6px 12px; font-size: 14px; }
+.sample { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: var(--display); font-size: 22px; font-weight: 500; }
+.tile { background: var(--pink); color: #fff; border-radius: 8px; padding: 2px 10px; }
+.tile.plain { background: var(--cream); color: var(--ink); }
+.btn {
+  appearance: none; border: 0; border-radius: 12px; cursor: pointer; width: 100%;
+  background: var(--pink); color: #fff; padding: 16px 20px;
+  font-family: var(--display); font-size: 20px; font-weight: 600; text-align: center;
+  text-decoration: none; display: block;
+}
+.btn:hover { filter: brightness(1.08); }
+.push { margin-top: auto; }
+:focus-visible { outline: 3px solid var(--cream); outline-offset: 2px; }
+.blocks { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+.blocks i { height: 12px; border-radius: 4px; background: var(--navy-deep); transition: background .2s; }
+.blocks i.on { background: var(--cream); }
+.blocks i.hit { background: var(--pink); }
+.step { font-size: 14px; color: var(--soft); }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  appearance: none; border: 3px solid transparent; border-radius: 12px; cursor: pointer; width: 100%;
+  background: var(--cream); color: var(--ink); padding: 14px 16px; text-align: left;
+  font-family: var(--display); font-size: 21px; font-weight: 500;
+}
+.opt:disabled { cursor: default; opacity: .62; }
+.opt.right { border-color: var(--good); opacity: 1; }
+.opt.wrong { border-color: var(--wrong); opacity: 1; }
+.feedback { background: var(--navy-deep); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.feedback strong { font-family: var(--display); font-size: 20px; font-weight: 600; }
+.score { font-family: var(--display); font-size: 18px; color: var(--soft); }
+form { display: flex; flex-direction: column; gap: 14px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 600; }
+input[type="text"], input[type="tel"], input[type="email"] {
+  width: 100%; border: 2px solid transparent; border-radius: 10px;
+  background: var(--cream); color: var(--ink); padding: 12px 14px; font: 500 16px var(--body);
+}
+.consent { flex-direction: row; align-items: flex-start; gap: 10px; font-weight: 400; color: var(--soft); }
+.consent input { margin-top: 3px; width: 20px; height: 20px; flex: none; accent-color: var(--pink); }
+.hide-field { position: absolute; left: -9999px; }
+.foot { color: var(--soft); font-size: 13px; }
+.meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--soft); }
+.scene { font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--cream); }
+.say { font-family: var(--display); font-size: 22px; font-weight: 500; background: var(--navy-deep); border-radius: 12px; padding: 12px 16px; }
+.write { display: flex; flex-direction: column; gap: 10px; }
+.write input { width: 100%; border: 3px solid transparent; border-radius: 12px; background: var(--cream); color: var(--ink); padding: 14px 16px; font: 500 18px var(--body); }
+.write input.right { border-color: var(--good); }
+.write input.wrong { border-color: var(--wrong); }
+.ghost { appearance: none; background: none; border: 0; color: var(--cream); cursor: pointer; font: 500 15px var(--body); padding: 8px; text-decoration: underline; }
+.model { font-family: var(--display); font-size: 20px; font-weight: 500; display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.areas { display: flex; flex-direction: column; gap: 12px; }
+.area { display: flex; flex-direction: column; gap: 6px; }
+.area div { display: flex; justify-content: space-between; gap: 12px; font-size: 15px; font-weight: 600; }
+.bar { display: flex; gap: 4px; }
+.bar i { flex: 1; height: 12px; border-radius: 4px; background: var(--navy-deep); }
+.bar i.hit { background: var(--pink); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="app">
+  <div class="brand"><span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Teacher Thayse Terra</div>
+
+  <section class="screen" id="intro">
+    <h1>Você fala inglês ou traduz do português?</h1>
+    <p class="lead">No trabalho e em viagem, ninguém te dá alternativas. Veja 8 situações reais, escreva o que você diria e descubra onde a tradução está travando sua fala.</p>
+    <div class="sample" aria-label="Exemplo de chunk: I have to work today"><span class="tile">I have to</span><span>work today</span></div>
+    <ul class="facts"><li>Cerca de 3 minutos</li><li>Sem áudio</li><li>Dia a dia, passado e futuro</li></ul>
+    <button class="btn push" id="start" type="button">Começar o teste</button>
+  </section>
+
+  <section class="screen" id="quiz" hidden>
+    <div class="blocks" id="blocks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="meta"><span id="step"></span><span id="clock" aria-hidden="true"></span></div>
+    <p class="scene" id="scene"></p>
+    <h2 id="situation"></h2>
+    <p class="say" id="say"></p>
+    <div class="options" id="options"></div>
+    <form class="write" id="write" hidden>
+      <label for="answer">Escreva em inglês<input type="text" id="answer" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en" enterkeyhint="done"></label>
+      <button class="btn" type="submit" id="check">Conferir</button>
+      <button class="ghost" type="button" id="skip">Não sei dizer</button>
+    </form>
+    <div class="feedback" id="feedback" hidden aria-live="polite">
+      <strong id="verdict"></strong>
+      <p class="model" id="model"></p>
+      <p id="explain"></p>
+    </div>
+    <button class="btn push" id="next" type="button" hidden>Próxima</button>
+  </section>
+
+  <section class="screen" id="result" hidden>
+    <p class="score" id="score"></p>
+    <h2 id="resultTitle"></h2>
+    <p class="lead" id="resultText"></p>
+    <div class="areas" id="areas"></div>
+    <p class="lead" id="timeText"></p>
+    <p>Gravei uma aula gratuita para você entender essa trava e já sair falando suas primeiras frases com chunks.</p>
+    <a class="btn" id="send" href="#" target="_blank" rel="noopener">Receber minha aula no WhatsApp</a>
+    <p class="foot">O WhatsApp abre com uma mensagem pronta para a Teacher Thayse. É só enviar.</p>
+  </section>
+
+  
+</main>
+
+<script>
+var WHATSAPP = "5527992039076";
+
+var AREAS = { day: "Falar do dia a dia", past: "Contar o que já aconteceu", future: "Falar do que vai acontecer" };
+
+var QUESTIONS = [
+  { area: "day", type: "choice", scene: "Na call de trabalho",
+    situation: "O cliente estrangeiro pergunta onde você trabalha.",
+    say: "Eu trabalho para uma empresa grande.",
+    options: ["I work to a big company.", "I am work in a big company.", "I work for a big company."], answer: 2,
+    model: ["", "I work for", " a big company."],
+    explain: "O “para” do português não vira to aqui. O bloco é I work for." },
+  { area: "day", type: "write", scene: "No aeroporto",
+    situation: "Seu voo foi cancelado. O atendente olha para você e espera.",
+    say: "Eu preciso comprar uma passagem.",
+    accept: /^(i (need|want|would like|have) to buy (a|one|the|another|a new) (new |plane |flight |air )?ticket|i need (a|one|another|a new) (new |plane |flight |air )?ticket)( please)?$/,
+    fuzzy: ["i need to buy a ticket"],
+    errors: [
+      [/passage/, "Passage não é passagem de avião. O que você compra é um ticket."],
+      [/need of/, "O “de” do português não vem junto. O bloco é I need to buy."],
+      [/(need|want) buy/, "Faltou o to. O bloco é inteiro: I need to buy."],
+      [/i am need/, "Aqui não entra am. O bloco é I need to."]
+    ],
+    model: ["", "I need to buy", " a ticket."],
+    explain: "O bloco é I need to buy. E passagem é ticket." },
+  { area: "day", type: "write", scene: "Na reunião",
+    situation: "A reunião atrasou e você precisa sair da call.",
+    say: "Desculpa, eu tenho que ir agora.",
+    accept: /^(sorry |i am sorry |excuse me )?i (have to|need to|must|have got to|gotta) (go|leave)( now| right now)?$/,
+    fuzzy: ["sorry i have to go now"],
+    errors: [
+      [/have that/, "“Tenho que” não vai palavra por palavra. O bloco é I have to."],
+      [/(have|need) to going/, "Depois de I have to, o bloco continua com go."],
+      [/i (have|need) go/, "Faltou o to. O bloco é I have to go."]
+    ],
+    model: ["Sorry, ", "I have to go", " now."],
+    explain: "“Tenho que ir” vira um bloco só: I have to go." },
+  { area: "past", type: "choice", scene: "No café com colegas",
+    situation: "Perguntam se você já foi para a Europa.",
+    say: "Eu fui para Portugal no ano passado.",
+    options: ["I went to Portugal last year.", "I go to Portugal in the last year.", "I was to Portugal the last year."], answer: 0,
+    model: ["", "I went to", " Portugal ", "last year", "."],
+    explain: "“No ano passado” não pede in the. O bloco é last year." },
+  { area: "past", type: "write", scene: "No trabalho",
+    situation: "Um colega de fora cobra uma resposta que você não mandou.",
+    say: "Desculpa, eu não entendi seu último e-mail.",
+    accept: /^(sorry |i am sorry )?i did not understand (your|the) (last |latest )?(email|message)$/,
+    fuzzy: ["sorry i did not understand your last email"],
+    errors: [
+      [/did not understood/, "Com didn't, a palavra seguinte não muda: I didn't understand."],
+      [/i (no|not) under/, "O “não” do português não vira no ou not sozinho. O bloco é I didn't understand."],
+      [/i do not under/, "Esse bloco fala de agora. Para algo que já aconteceu, é I didn't understand."],
+      [/i understood/, "Faltou o “não”. O bloco é I didn't understand."],
+      [/ultimate|ultimo/, "“Último e-mail” é last email."]
+    ],
+    model: ["Sorry, ", "I didn't understand", " your last email."],
+    explain: "Para o que já aconteceu, o bloco é I didn't understand." },
+  { area: "past", type: "write", scene: "Na alfândega",
+    situation: "O agente abre sua mala e aponta para uma caixa.",
+    say: "Eu comprei um presente para a minha mãe.",
+    accept: /^(i (bought|brought) (a|this|one)|it is a|this is a) (small |little )?(gift|present|souvenir) for my (mother|mom|mum)$/,
+    fuzzy: ["i bought a gift for my mother", "i bought a present for my mother", "i bought a gift for my mom", "i bought a present for my mom"],
+    errors: [
+      [/(gift|present|souvenir) to my/, "Aqui o “para” vira for: a gift for my mother."],
+      [/buyed|boughted/, "Esse bloco muda: I bought."],
+      [/^i buy/, "Isso fala de agora. Para o que já aconteceu, é I bought."]
+    ],
+    model: ["", "I bought a gift for", " my mother."],
+    explain: "O bloco é I bought a gift for. O “para” aqui é for." },
+  { area: "future", type: "choice", scene: "No trabalho",
+    situation: "Sua colega estrangeira está perdida com um relatório.",
+    say: "Não se preocupe, eu vou te ajudar.",
+    options: ["Don't preoccupy, I go to help you.", "Don't worry, I'll help you.", "Don't worry, I will to help you."], answer: 1,
+    model: ["", "Don't worry", ", ", "I'll help you", "."],
+    explain: "“Eu vou te ajudar”, na hora de oferecer ajuda, é I'll help you." },
+  { area: "future", type: "write", scene: "No telefone",
+    situation: "Um cliente liga bem na hora em que você está entrando em uma reunião.",
+    say: "Eu te ligo depois.",
+    accept: /^(ok |okay |sorry )?(i will|i am going to) call you( back)?( later| soon)?$/,
+    fuzzy: ["i will call you later"],
+    errors: [
+      [/call to you/, "O “to” não entra aqui. O bloco é I'll call you."],
+      [/will to/, "Depois de will ou I'll, não entra to."],
+      [/^i call you/, "Assim parece rotina. Para o que você vai fazer, é I'll call you."],
+      [/^i go (to )?call/, "“Eu vou ligar” não vira I go to call. O bloco é I'll call you."]
+    ],
+    model: ["", "I'll call you", " later."],
+    explain: "“Eu te ligo” vira I'll call you. Aqui não entra to." }
+];
+
+var RESULTS = [
+  { max: 3, title: "Seu português está falando por você",
+    text: "Na hora de produzir, sua cabeça tenta traduzir tudo, e a frase trava ou sai do jeito do português. Isso é muito comum em quem aprendeu inglês palavra por palavra." },
+  { max: 6, title: "Você sabe bastante, mas ainda traduz",
+    text: "Algumas frases saíram. Outras vieram direto do português. Na reunião ou no aeroporto, são justamente essas que travam." },
+  { max: 8, title: "Você já escreve em blocos",
+    text: "Suas frases saíram bem. O próximo passo é fazer tudo isso sair falando, sem tempo para pensar." }
+];
+
+var current = 0, hits = 0, answers = [], log = [], times = [], startedAt = 0, ticker = null;
+function $(id) { return document.getElementById(id); }
+function show(id) {
+  ["intro", "quiz", "result"].forEach(function (s) { $(s).hidden = s !== id; });
+  window.scrollTo(0, 0);
+}
+function normalize(text) {
+  return text.toLowerCase()
+    .replace(/[’‘`´]/g, "'")
+    .replace(/e-mail/g, "email")
+    .replace(/[.,!?;:"“”]/g, " ")
+    .replace(/\b(i'll|i ll)\b/g, "i will").replace(/^ill\b/, "i will")
+    .replace(/\b(i'm|i m)\b/g, "i am").replace(/^im\b/, "i am")
+    .replace(/\bit's\b/g, "it is")
+    .replace(/\bdidn'?t\b/g, "did not")
+    .replace(/\bdon'?t\b/g, "do not")
+    .replace(/\s+/g, " ").trim();
+}
+function distanceOne(a, b) {
+  if (a.length === b.length) {
+    var diff = [];
+    for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) diff.push(i);
+    if (diff.length === 1) return true;
+    return diff.length === 2 && diff[1] === diff[0] + 1 && a[diff[0]] === b[diff[1]] && a[diff[1]] === b[diff[0]];
+  }
+  if (Math.abs(a.length - b.length) !== 1) return false;
+  var s = a.length < b.length ? a : b, l = a.length < b.length ? b : a, k = 0;
+  while (k < s.length && s[k] === l[k]) k++;
+  return s.slice(k) === l.slice(k + 1);
+}
+/* Aceita um erro de digitação em palavra longa, mas não troca de palavra nem final de palavra. */
+function isTypo(text, target) {
+  var a = text.split(" "), b = target.split(" "), changed = 0, ok = true;
+  if (a.length !== b.length) return false;
+  b.forEach(function (w, i) {
+    if (w === a[i]) return;
+    changed++;
+    if (w.length < 5 || w.indexOf(a[i]) === 0 || a[i].indexOf(w) === 0 || !distanceOne(a[i], w)) ok = false;
+  });
+  return ok && changed === 1;
+}
+function grade(q, raw) {
+  var text = normalize(raw);
+  if (q.accept.test(text)) return { right: true };
+  for (var i = 0; i < q.errors.length; i++) {
+    if (q.errors[i][0].test(text)) return { right: false, known: q.errors[i][1] };
+  }
+  if (q.fuzzy.some(function (t) { return isTypo(text, t); })) return { right: true };
+  return { right: false };
+}
+function paintBlocks() {
+  var blocks = $("blocks").children;
+  for (var i = 0; i < blocks.length; i++) {
+    blocks[i].className = i < answers.length ? (answers[i] ? "hit" : "on") : "";
+  }
+}
+function stopClock() {
+  if (ticker) clearInterval(ticker);
+  ticker = null;
+}
+function startClock() {
+  startedAt = Date.now();
+  $("clock").textContent = "Esperando sua resposta: 0 s";
+  ticker = setInterval(function () {
+    $("clock").textContent = "Esperando sua resposta: " + Math.round((Date.now() - startedAt) / 1000) + " s";
+  }, 1000);
+}
+function renderModel(parts) {
+  var box = $("model");
+  box.textContent = "";
+  parts.forEach(function (part, i) {
+    if (!part) return;
+    var span = document.createElement("span");
+    if (i % 2 === 1) span.className = "tile";
+    span.textContent = part;
+    box.appendChild(span);
+  });
+}
+function renderQuestion() {
+  var q = QUESTIONS[current];
+  $("step").textContent = "Situação " + (current + 1) + " de " + QUESTIONS.length;
+  $("scene").textContent = q.scene;
+  $("situation").textContent = q.situation;
+  $("say").textContent = "Você quer dizer: “" + q.say + "”";
+  $("feedback").hidden = true;
+  $("next").hidden = true;
+  $("next").textContent = current === QUESTIONS.length - 1 ? "Ver meu resultado" : "Próxima";
+  var box = $("options");
+  box.textContent = "";
+  box.hidden = q.type !== "choice";
+  $("write").hidden = q.type !== "write";
+  $("clock").textContent = "";
+  stopClock();
+  if (q.type === "choice") {
+    q.options.forEach(function (text, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "opt";
+      b.id = "opt-" + i;
+      b.textContent = text;
+      b.addEventListener("click", function () { choose(i); });
+      box.appendChild(b);
+    });
+  } else {
+    var input = $("answer");
+    input.value = "";
+    input.disabled = false;
+    input.className = "";
+    $("check").hidden = false;
+    $("skip").hidden = false;
+    startClock();
+    input.focus();
+  }
+  paintBlocks();
+}
+function finish(right, title, note) {
+  var q = QUESTIONS[current];
+  if (right) hits++;
+  answers.push(right);
+  $("verdict").textContent = title;
+  renderModel(q.model);
+  $("explain").textContent = note || q.explain;
+  $("feedback").hidden = false;
+  $("next").hidden = false;
+  paintBlocks();
+}
+function choose(i) {
+  var q = QUESTIONS[current], right = i === q.answer;
+  log.push((current + 1) + ". " + q.options[i]);
+  Array.prototype.forEach.call($("options").children, function (b, k) {
+    b.disabled = true;
+    if (k === q.answer) b.classList.add("right");
+    else if (k === i) b.classList.add("wrong");
+  });
+  finish(right, right ? "Isso! Saiu em bloco." : "Essa veio do português.");
+}
+function submitWritten(raw) {
+  var q = QUESTIONS[current], input = $("answer"), seconds = Math.round((Date.now() - startedAt) / 1000);
+  stopClock();
+  times.push(seconds);
+  input.disabled = true;
+  $("check").hidden = true;
+  $("skip").hidden = true;
+  if (raw === null) {
+    log.push((current + 1) + ". (não soube dizer)");
+    finish(false, "É aqui que a fala trava.");
+    return;
+  }
+  var result = grade(q, raw);
+  log.push((current + 1) + ". " + raw);
+  input.className = result.right ? "right" : "wrong";
+  if (result.right) finish(true, "Isso! Saiu em bloco.");
+  else if (result.known) finish(false, "Essa veio do português.", result.known);
+  else finish(false, "Compare com a forma mais natural.");
+}
+function showResult() {
+  stopClock();
+  var r = RESULTS.filter(function (x) { return hits <= x.max; })[0];
+  $("score").textContent = hits + " de " + QUESTIONS.length + " acertos";
+  $("resultTitle").textContent = r.title;
+  $("resultText").textContent = r.text;
+  var box = $("areas");
+  box.textContent = "";
+  Object.keys(AREAS).forEach(function (key) {
+    var total = 0, got = 0;
+    QUESTIONS.forEach(function (q, i) {
+      if (q.area === key) { total++; if (answers[i]) got++; }
+    });
+    var area = document.createElement("div"), row = document.createElement("div"), name = document.createElement("span"), count = document.createElement("span"), bar = document.createElement("span");
+    area.className = "area";
+    bar.className = "bar";
+    name.textContent = AREAS[key];
+    count.textContent = got + " de " + total;
+    row.appendChild(name);
+    row.appendChild(count);
+    for (var i = 0; i < total; i++) {
+      var piece = document.createElement("i");
+      if (i < got) piece.className = "hit";
+      bar.appendChild(piece);
+    }
+    area.appendChild(row);
+    area.appendChild(bar);
+    box.appendChild(area);
+  });
+  var average = Math.round(times.reduce(function (a, b) { return a + b; }, 0) / times.length);
+  $("timeText").textContent = "Você levou em média " + average + " segundos para responder cada frase escrita. Em uma conversa, a outra pessoa estaria esperando esse tempo todo.";
+  $("send").href = "https://api.whatsapp.com/send?phone=" + WHATSAPP + "&text=" + encodeURIComponent("Oi, Teacher Thayse! Fiz o miniteste e acertei " + hits + " de " + QUESTIONS.length + ". Quero receber a aula gratuita.");
+  show("result");
+}
+$("start").addEventListener("click", function () { renderQuestion(); show("quiz"); $("answer").focus(); });
+$("write").addEventListener("submit", function (e) {
+  e.preventDefault();
+  if ($("answer").value.trim()) submitWritten($("answer").value);
+});
+$("skip").addEventListener("click", function () { submitWritten(null); });
+$("next").addEventListener("click", function () {
+  current++;
+  if (current < QUESTIONS.length) { renderQuestion(); window.scrollTo(0, 0); } else { showResult(); }
+});
+</script>
+
+</body></html>
